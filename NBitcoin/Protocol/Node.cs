@@ -549,7 +549,7 @@ namespace NBitcoin.Protocol
 		/// <param name="parameters">The parameters used by the found node</param>
 		/// <param name="connectedEndpoints">The already connected endpoints, the new endpoint will be select outside of existing groups</param>
 		/// <returns></returns>
-		public static Node Connect(Network network, AddressManager addrman, NodeConnectionParameters parameters = null, IPEndPoint[] connectedEndpoints = null)
+		public static Node Connect(Network network, IAddressManager addrman, NodeConnectionParameters parameters = null, IPEndPoint[] connectedEndpoints = null)
 		{
 			parameters = parameters ?? new NodeConnectionParameters();
 			AddressManagerBehavior.SetAddrman(parameters, addrman);
@@ -566,7 +566,7 @@ namespace NBitcoin.Protocol
 		/// <returns></returns>
 		public static Node Connect(Network network, NodeConnectionParameters parameters = null, IPEndPoint[] connectedEndpoints = null, Func<IPEndPoint, byte[]> getGroup = null)
 		{
-			getGroup = getGroup ?? new Func<IPEndPoint, byte[]>((a) => IpExtensions.GetGroup(a.Address));
+			getGroup = getGroup ?? (a => IpExtensions.GetGroup(a.Address));
 			connectedEndpoints = connectedEndpoints ?? new IPEndPoint[0];
 			parameters = parameters ?? new NodeConnectionParameters();
 			var addrmanBehavior = parameters.TemplateBehaviors.FindOrCreate(() => new AddressManagerBehavior(new AddressManager()));

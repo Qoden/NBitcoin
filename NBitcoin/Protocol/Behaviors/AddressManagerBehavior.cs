@@ -35,18 +35,18 @@ namespace NBitcoin.Protocol.Behaviors
 	/// </summary>
 	public class AddressManagerBehavior : NodeBehavior
 	{
-		public static AddressManager GetAddrman(Node node)
+		public static IAddressManager GetAddrman(Node node)
 		{
 			return GetAddrman(node.Behaviors);
 		}
-		public static AddressManager GetAddrman(NodeConnectionParameters parameters)
+		public static IAddressManager GetAddrman(NodeConnectionParameters parameters)
 		{
 			if(parameters == null)
 				throw new ArgumentNullException(nameof(parameters));
 			return GetAddrman(parameters.TemplateBehaviors);
 		}
 
-		public static AddressManager GetAddrman(NodeBehaviorsCollection behaviors)
+		public static IAddressManager GetAddrman(NodeBehaviorsCollection behaviors)
 		{
 			if(behaviors == null)
 				throw new ArgumentNullException(nameof(behaviors));
@@ -55,14 +55,14 @@ namespace NBitcoin.Protocol.Behaviors
 				return null;
 			return behavior.AddressManager;
 		}
-		public static void SetAddrman(Node node, AddressManager addrman)
+		public static void SetAddrman(Node node, IAddressManager addrman)
 		{
 			if(node == null)
 				throw new ArgumentNullException(nameof(node));
 			SetAddrman(node.Behaviors, addrman);
 		}
 
-		public static void SetAddrman(NodeConnectionParameters parameters, AddressManager addrman)
+		public static void SetAddrman(NodeConnectionParameters parameters, IAddressManager addrman)
 		{
 			if(parameters == null)
 				throw new ArgumentNullException(nameof(parameters));
@@ -86,7 +86,7 @@ namespace NBitcoin.Protocol.Behaviors
 			}
 		}
 
-		public static void SetAddrman(NodeBehaviorsCollection behaviors, AddressManager addrman)
+		public static void SetAddrman(NodeBehaviorsCollection behaviors, IAddressManager addrman)
 		{
 			if(behaviors == null)
 				throw new ArgumentNullException(nameof(behaviors));
@@ -100,7 +100,7 @@ namespace NBitcoin.Protocol.Behaviors
 			behavior.AddressManager = addrman;
 		}
 
-		public AddressManagerBehavior(AddressManager manager)
+		public AddressManagerBehavior(IAddressManager manager)
 		{
 			if(manager == null)
 				throw new ArgumentNullException(nameof(manager));
@@ -113,8 +113,8 @@ namespace NBitcoin.Protocol.Behaviors
 			get;
 			set;
 		}
-		AddressManager _AddressManager;
-		public AddressManager AddressManager
+		IAddressManager _AddressManager;
+		public IAddressManager AddressManager
 		{
 			get
 			{

@@ -12,14 +12,46 @@ using System.Threading.Tasks;
 
 namespace NBitcoin.Protocol
 {
+	public interface IAddressManager : IBitcoinSerializable
+	{
+		void SavePeerFile(string filePath, Network network);
+		void ReadWrite(BitcoinStream stream);
+		bool Add(NetworkAddress addr, IPAddress source);
+		bool Add(NetworkAddress addr);
+		bool Add(NetworkAddress addr, IPAddress source, TimeSpan nTimePenalty);
+		bool Add(IEnumerable<NetworkAddress> vAddr, IPAddress source);
+		bool Add(IEnumerable<NetworkAddress> vAddr, IPAddress source, TimeSpan nTimePenalty);
+		void Good(NetworkAddress addr);
+		void Good(NetworkAddress addr, DateTimeOffset nTime);
+		void Attempt(NetworkAddress addr);
+		void Attempt(NetworkAddress addr, DateTimeOffset nTime);
+		void Connected(NetworkAddress addr);
+		void Connected(NetworkAddress addr, DateTimeOffset nTime);
+
+		/// <summary>
+		/// Choose an address to connect to.
+		/// </summary>
+		/// <returns>The network address of a peer, or null if none are found</returns>
+		NetworkAddress Select();
+
+		/// <summary>
+		/// Return a bunch of addresses, selected at random.
+		/// </summary>
+		/// <returns></returns>
+		NetworkAddress[] GetAddr();
+
+		int Count { get; }
+		
+		void DiscoverPeers(Network network, NodeConnectionParameters parameters, int peerToFind);
+	}
 
 	/// <summary>
 	/// The AddressManager, keep a set of peers discovered on the network in cache can update their actual states.
 	/// Replicate AddressManager of Bitcoin Core, the Buckets and BucketPosition are not guaranteed to be coherent with Bitcoin Core
 	/// </summary>
-	public class AddressManager : IBitcoinSerializable
+	public class AddressManager : IAddressManager
 	{
-		internal class AddressInfo : IBitcoinSerializable
+		public class AddressInfo : IBitcoinSerializable
 		{
 			#region IBitcoinSerializable Members
 
@@ -281,7 +313,7 @@ namespace NBitcoin.Protocol
 
 
 #if !NOFILEIO
-		public static AddressManager LoadPeerFile(string filePath, Network expectedNetwork = null)
+		public static IAddressManager LoadPeerFile(string filePath, Network expectedNetwork = null)
 		{
 			var addrman = new AddressManager();
 			byte[] data, hash;
@@ -1133,7 +1165,7 @@ namespace NBitcoin.Protocol
 			}
 		}
 
-		internal void DiscoverPeers(Network network, NodeConnectionParameters parameters, int peerToFind)
+		public void DiscoverPeers(Network network, NodeConnectionParameters parameters, int peerToFind)
 		{
 			TraceCorrelation traceCorrelation = new TraceCorrelation(NodeServerTrace.Trace, "Discovering nodes");
 			int found = 0;
