@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace NBitcoin.Protocol.Behaviors
 {
@@ -166,6 +167,11 @@ namespace NBitcoin.Protocol.Behaviors
 					validated &= !SharedState.IsMarkedInvalid(tip.HashBlock);
 					if(!validated)
 					{
+						Log.ForContext("SourceContext", "NBitcoin")
+						   .Error("Invalid header received. Network = {Network}, Height = {Height}, HashBlock = {HashBlock}.",
+						          AttachedNode.Network.Name,
+						          tip.Height,
+								  tip.HashBlock);
 						invalidHeaderReceived = true;
 						break;
 					}
