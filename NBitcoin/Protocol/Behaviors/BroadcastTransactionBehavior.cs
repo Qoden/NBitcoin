@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NBitcoin;
 using System.Threading;
+using Serilog;
 
 namespace NBitcoin.Protocol.Behaviors
 {
@@ -319,6 +320,7 @@ namespace NBitcoin.Protocol.Behaviors
 					Transaction unused;
 					if(_BroadcastHub.BroadcastedTransaction.TryRemove(hash, out unused))
 					{
+						Log.Debug("MSG_TX {node} {TxId} ", node.Peer.Endpoint, hash);
 						_BroadcastHub.OnTransactionBroadcasted(tx.Transaction);
 					}
 				}
@@ -365,6 +367,7 @@ namespace NBitcoin.Protocol.Behaviors
 					Transaction unused;
 					if(_BroadcastHub.BroadcastedTransaction.TryRemove(tx.Transaction.GetHash(), out unused))
 					{
+						Log.Debug("PONG {node} {TxId} ", node.Peer.Endpoint, tx.Transaction.GetHash());
 						_BroadcastHub.OnTransactionBroadcasted(tx.Transaction);
 					}
 				}
