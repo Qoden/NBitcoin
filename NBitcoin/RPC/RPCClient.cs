@@ -697,6 +697,7 @@ namespace NBitcoin.RPC
 				await dataStream.FlushAsync().ConfigureAwait(false);
 				dataStream.Dispose();
 			}
+			webRequest.Timeout = 86400000;
 			WebResponse webResponse = null;
 			WebResponse errorResponse = null;
 			try
